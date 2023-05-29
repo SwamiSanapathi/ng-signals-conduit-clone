@@ -1,5 +1,7 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { takeUntil } from 'rxjs/operators';
 import { ArticleService } from '../shared/data-access/articles.service';
+import { $destroyRef } from '../shared/destroy';
 
 @Component({
     standalone: true,
@@ -17,8 +19,8 @@ import { ArticleService } from '../shared/data-access/articles.service';
                     <div class="col-md-9">
                         <div class="feed-toggle">
                             <ul class="nav nav-pills outline-active">
-                                <li class="nav-item">
-                                    <a class="nav-link disabled" href="">Your Feed</a>
+                                <li class="nav-item" (click)="getArticles()">
+                                    <a class="nav-link disabled">Your Feed</a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link active" href="">Global Feed</a>
@@ -86,16 +88,27 @@ import { ArticleService } from '../shared/data-access/articles.service';
         </div>
     `,
 })
-export default class HomeComponent implements OnInit {
+export default class HomeComponent implements OnInit, OnDestroy {
     readonly #articleService = inject(ArticleService);
+    $destory = $destroyRef();
 
     ngOnInit() {
         this.getArticles();
     }
 
     getArticles() {
-        this.#articleService.getGlobalArticles().subscribe((data) => {
-            console.log('Global Articles --> ', data);
-        });
+        this.$destory.next();
+        this.#articleService
+            .getGlobalArticles()
+            .pipe(takeUntil(this.$destory))
+            .subscribe((data) => {
+                console.log('Global Articles --> ', data);
+            });
+    }
+
+    ngOnDestroy() {
+        this.$destory.next();
+        this.$destory.complete();
+        console.log('home component destroyed');
     }
 }
