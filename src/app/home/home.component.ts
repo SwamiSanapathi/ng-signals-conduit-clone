@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
+import { ArticleService } from '../shared/data-access/articles.service';
 
 @Component({
     standalone: true,
@@ -85,4 +86,16 @@ import { Component } from '@angular/core';
         </div>
     `,
 })
-export default class HomeComponent {}
+export default class HomeComponent implements OnInit {
+    readonly #articleService = inject(ArticleService);
+
+    ngOnInit() {
+        this.getArticles();
+    }
+
+    getArticles() {
+        this.#articleService.getGlobalArticles().subscribe((data) => {
+            console.log('Global Articles --> ', data);
+        });
+    }
+}
