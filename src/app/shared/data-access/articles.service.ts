@@ -11,7 +11,6 @@ export class ArticleService {
     readonly #apiUrl = inject(API_CONFIG_TOKEN).apiUrl;
 
     getGlobalArticles(): Observable<any> {
-        console.log('this.#apiUrl -->', this.#apiUrl);
-        return this.#http.get(this.#apiUrl + '/articles');
+        return this.#http.get('/articles');
     }
 }

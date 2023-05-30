@@ -6,7 +6,7 @@ export interface ApiConfig {
 
 export const API_CONFIG_TOKEN = new InjectionToken<ApiConfig>('app.config');
 
-export const getEnvConfig = (value: ApiConfig): ValueProvider => ({
+export const provideEnvConfig = (value: ApiConfig): ValueProvider => ({
     provide: API_CONFIG_TOKEN,
     useValue: value,
 });
