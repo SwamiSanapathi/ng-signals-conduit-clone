@@ -6,8 +6,6 @@ export function $destroyRef() {
     inject(DestroyRef).onDestroy(() => {
         destroy.next();
         destroy.complete();
-        console.log('destroyed');
-        
     });
     return destroy;
 }
